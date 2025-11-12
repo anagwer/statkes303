@@ -34,6 +34,8 @@ class Pemeriksaan extends CI_Controller {
         if ($this->input->post()) {
             $data = [
                 'anggota' => $this->input->post('anggota'),
+                'tb' => $this->input->post('tb'), // Tambahkan ini
+                'bb' => $this->input->post('bb'), // Tambahkan ini
                 'gula' => $this->input->post('gula'),
                 'kolestrol' => $this->input->post('kolestrol'),
                 'asam' => $this->input->post('asam'),
@@ -71,6 +73,8 @@ class Pemeriksaan extends CI_Controller {
         if ($this->input->post()) {
             $data = [
                 'anggota' => $this->input->post('anggota'),
+                'tb' => $this->input->post('tb'), // Tambahkan ini
+                'bb' => $this->input->post('bb'), // Tambahkan ini
                 'gula' => $this->input->post('gula'),
                 'kolestrol' => $this->input->post('kolestrol'),
                 'asam' => $this->input->post('asam'),
@@ -138,19 +142,21 @@ class Pemeriksaan extends CI_Controller {
         $activeSheet->setCellValue('C1', 'Nama');
         $activeSheet->setCellValue('D1', 'Jabatan');
         $activeSheet->setCellValue('E1', 'Tanggal Pemeriksaan');
-        $activeSheet->setCellValue('F1', 'Gula Darah');
-        $activeSheet->setCellValue('G1', 'Kolestrol');
-        $activeSheet->setCellValue('H1', 'Asam Urat');
-        $activeSheet->setCellValue('I1', 'Tekanan Darah');
-        $activeSheet->setCellValue('J1', 'Nadi');
-        $activeSheet->setCellValue('K1', 'Saturasi O2');
-        $activeSheet->setCellValue('L1', 'RR');
-        $activeSheet->setCellValue('M1', 'Suhu');
-        $activeSheet->setCellValue('N1', 'Keterangan');
-        $activeSheet->setCellValue('O1', 'Created At');
+        $activeSheet->setCellValue('F1', 'TB (cm)'); // Tambahkan ini
+        $activeSheet->setCellValue('G1', 'BB (kg)'); // Tambahkan ini
+        $activeSheet->setCellValue('H1', 'Gula Darah');
+        $activeSheet->setCellValue('I1', 'Kolestrol');
+        $activeSheet->setCellValue('J1', 'Asam Urat');
+        $activeSheet->setCellValue('K1', 'Tekanan Darah');
+        $activeSheet->setCellValue('L1', 'Nadi');
+        $activeSheet->setCellValue('M1', 'Saturasi O2');
+        $activeSheet->setCellValue('N1', 'RR');
+        $activeSheet->setCellValue('O1', 'Suhu');
+        $activeSheet->setCellValue('P1', 'Keterangan');
+        $activeSheet->setCellValue('Q1', 'Created At');
 
         // --- Tambahkan baris-baris ini untuk membuat header bold dan center ---
-        $headerRange = 'A1:O1'; // Tentukan rentang sel header
+        $headerRange = 'A1:Q1'; // Tentukan rentang sel header
         $activeSheet->getStyle($headerRange)->getFont()->setBold(true); // Buat font tebal
         $activeSheet->getStyle($headerRange)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER); // Rata tengah horizontal
         // --- Selesai tambahan ---
@@ -163,21 +169,23 @@ class Pemeriksaan extends CI_Controller {
             $activeSheet->setCellValue('C' . $row, $item->nama);
             $activeSheet->setCellValue('D' . $row, $item->jabatan);
             $activeSheet->setCellValue('E' . $row, $item->created_at ? date('d-m-Y', strtotime($item->created_at)) : '');
-            $activeSheet->setCellValue('F' . $row, $item->gula);
-            $activeSheet->setCellValue('G' . $row, $item->kolestrol);
-            $activeSheet->setCellValue('H' . $row, $item->asam);
-            $activeSheet->setCellValue('I' . $row, $item->tekanan);
-            $activeSheet->setCellValue('J' . $row, $item->nadi);
-            $activeSheet->setCellValue('K' . $row, $item->saturasi);
-            $activeSheet->setCellValue('L' . $row, $item->rr);
-            $activeSheet->setCellValue('M' . $row, $item->suhu);
-            $activeSheet->setCellValue('N' . $row, $item->keterangan);
-            $activeSheet->setCellValue('O' . $row, $item->created_at);
+            $activeSheet->setCellValue('F' . $row, $item->tb); // Tambahkan ini
+            $activeSheet->setCellValue('G' . $row, $item->bb); // Tambahkan ini
+            $activeSheet->setCellValue('H' . $row, $item->gula);
+            $activeSheet->setCellValue('I' . $row, $item->kolestrol);
+            $activeSheet->setCellValue('J' . $row, $item->asam);
+            $activeSheet->setCellValue('K' . $row, $item->tekanan);
+            $activeSheet->setCellValue('L' . $row, $item->nadi);
+            $activeSheet->setCellValue('M' . $row, $item->saturasi);
+            $activeSheet->setCellValue('N' . $row, $item->rr);
+            $activeSheet->setCellValue('O' . $row, $item->suhu);
+            $activeSheet->setCellValue('P' . $row, $item->keterangan);
+            $activeSheet->setCellValue('Q' . $row, $item->created_at);
             $row++;
         }
 
         // Atur lebar kolom otomatis
-        foreach(range('A','O') as $col) {
+        foreach(range('A','Q') as $col) { // Ubah rentang ke Q
             $activeSheet->getColumnDimension($col)->setAutoSize(true);
         }
 

@@ -25,6 +25,8 @@
                         <th>Nama Anggota</th>
                         <th>Jabatan</th>
                         <th>Tanggal</th>
+                        <th>TB (cm)</th> <!-- Tambahkan kolom ini -->
+                        <th>BB (kg)</th> <!-- Tambahkan kolom ini -->
                         <th>Gula</th>
                         <th>Kolestrol</th>
                         <th>Asam</th>
@@ -51,6 +53,8 @@
                         <td><?= htmlspecialchars($p->nip ?? '–') ?> <br> <?= htmlspecialchars($p->nama_anggota ?? '–') ?></td>
                         <td><?= htmlspecialchars($p->jabatan ?? '–') ?></td>
                         <td><?= $p->created_at ? date('d-m-Y', strtotime($p->created_at)) : '–' ?></td>
+                        <td><?= htmlspecialchars($p->tb ?: '–') ?></td> <!-- Tambahkan kolom ini -->
+                        <td><?= htmlspecialchars($p->bb ?: '–') ?></td> <!-- Tambahkan kolom ini -->
                         <td><?= htmlspecialchars($p->gula ?: '–') ?></td>
                         <td><?= htmlspecialchars($p->kolestrol ?: '–') ?></td>
                         <td><?= htmlspecialchars($p->asam ?: '–') ?></td>
@@ -87,6 +91,14 @@
                                                     </option>
                                                 <?php endforeach; ?>
                                             </select>
+                                        </div>
+                                        <div class="form-group"> <!-- Tambahkan div ini -->
+                                            <label>Tinggi Badan (cm)</label>
+                                            <input type="number" name="tb" class="form-control" value="<?= htmlspecialchars($p->tb) ?>" min="0" step="0.1"> <!-- Tambahkan input ini -->
+                                        </div>
+                                        <div class="form-group"> <!-- Tambahkan div ini -->
+                                            <label>Berat Badan (kg)</label>
+                                            <input type="number" name="bb" class="form-control" value="<?= htmlspecialchars($p->bb) ?>" min="0" step="0.1"> <!-- Tambahkan input ini -->
                                         </div>
                                         <div class="form-group">
                                             <label>Gula Darah</label>
@@ -181,6 +193,14 @@
                                 </option>
                             <?php endforeach; ?>
                         </select>
+                    </div>
+                    <div class="form-group"> <!-- Tambahkan div ini -->
+                        <label>Tinggi Badan (cm)</label>
+                        <input type="number" name="tb" class="form-control" placeholder="Contoh: 170" min="0" step="0.1"> <!-- Tambahkan input ini -->
+                    </div>
+                    <div class="form-group"> <!-- Tambahkan div ini -->
+                        <label>Berat Badan (kg)</label>
+                        <input type="number" name="bb" class="form-control" placeholder="Contoh: 65.5" min="0" step="0.1"> <!-- Tambahkan input ini -->
                     </div>
                     <div class="form-group">
                         <label>Gula Darah</label>

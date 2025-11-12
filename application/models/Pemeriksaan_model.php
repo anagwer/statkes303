@@ -46,7 +46,7 @@ class Pemeriksaan_model extends CI_Model {
 
     // Fungsi baru untuk export Excel
     public function get_for_export($user_filter = null, $start_date = null, $end_date = null) {
-        $this->db->select('u.nip, u.nama, u.jabatan, p.created_at, p.gula, p.kolestrol, p.asam, p.tekanan, p.nadi, p.saturasi, p.rr, p.suhu, p.keterangan');
+        $this->db->select('u.nip, u.nama, u.jabatan, p.created_at, p.tb, p.bb, p.gula, p.kolestrol, p.asam, p.tekanan, p.nadi, p.saturasi, p.rr, p.suhu, p.keterangan'); // Tambahkan tb dan bb ke select
         $this->db->from('pemeriksaan p');
         $this->db->join('users u', 'u.id = p.anggota', 'inner'); // inner join untuk memastikan data user valid
 

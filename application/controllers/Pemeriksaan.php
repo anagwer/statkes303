@@ -9,10 +9,14 @@ class Pemeriksaan extends CI_Controller {
             redirect('auth');
         }
         $this->load->model('Pemeriksaan_model');
+        $this->load->helper('download'); // Helper untuk download
     }
 
     public function index() {
-        $data['items'] = $this->Pemeriksaan_model->get_all();
+        $user_id = $this->session->userdata('user_id');
+        $role = $this->session->userdata('role');
+
+        $data['items'] = $this->Pemeriksaan_model->get_all($user_id, $role);
         $data['title'] = 'Data Pemeriksaan Kesehatan';
 				
         $data['users'] = $this->Pemeriksaan_model->get_users();
@@ -22,6 +26,11 @@ class Pemeriksaan extends CI_Controller {
     }
 
     public function create() {
+        // Hanya admin yang bisa akses
+        if ($this->session->userdata('role') != 'admin') {
+            show_error('Akses ditolak!', 403);
+        }
+
         if ($this->input->post()) {
             $data = [
                 'anggota' => $this->input->post('anggota'),
@@ -54,6 +63,11 @@ class Pemeriksaan extends CI_Controller {
     }
 
     public function edit($id) {
+        // Hanya admin yang bisa akses
+        if ($this->session->userdata('role') != 'admin') {
+            show_error('Akses ditolak!', 403);
+        }
+
         if ($this->input->post()) {
             $data = [
                 'anggota' => $this->input->post('anggota'),
@@ -86,11 +100,97 @@ class Pemeriksaan extends CI_Controller {
     }
 
     public function delete($id) {
+        // Hanya admin yang bisa akses
+        if ($this->session->userdata('role') != 'admin') {
+            show_error('Akses ditolak!', 403);
+        }
+
         if ($this->Pemeriksaan_model->delete($id)) {
             $this->session->set_flashdata('success', 'Data pemeriksaan berhasil dihapus!');
         } else {
             $this->session->set_flashdata('error', 'Gagal menghapus data!');
         }
         redirect('pemeriksaan');
+    }
+
+    public function export_excel() {
+        // Hanya admin yang bisa export
+        if ($this->session->userdata('role') != 'admin') {
+            show_error('Akses ditolak!', 403);
+        }
+
+        $user_filter = $this->input->get('id_user');
+        $start_date = $this->input->get('start_date');
+        $end_date = $this->input->get('end_date');
+
+        $data_export = $this->Pemeriksaan_model->get_for_export($user_filter, $start_date, $end_date);
+
+        // Muat kelas utama PhpSpreadsheet
+        require_once APPPATH . '../vendor/autoload.php';
+
+        // Buat objek Spreadsheet langsung dengan Fully Qualified Class Name
+        $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+        $activeSheet = $spreadsheet->getActiveSheet();
+
+        // Header Kolom
+        $activeSheet->setCellValue('A1', 'No');
+        $activeSheet->setCellValue('B1', 'NIP');
+        $activeSheet->setCellValue('C1', 'Nama');
+        $activeSheet->setCellValue('D1', 'Jabatan');
+        $activeSheet->setCellValue('E1', 'Tanggal Pemeriksaan');
+        $activeSheet->setCellValue('F1', 'Gula Darah');
+        $activeSheet->setCellValue('G1', 'Kolestrol');
+        $activeSheet->setCellValue('H1', 'Asam Urat');
+        $activeSheet->setCellValue('I1', 'Tekanan Darah');
+        $activeSheet->setCellValue('J1', 'Nadi');
+        $activeSheet->setCellValue('K1', 'Saturasi O2');
+        $activeSheet->setCellValue('L1', 'RR');
+        $activeSheet->setCellValue('M1', 'Suhu');
+        $activeSheet->setCellValue('N1', 'Keterangan');
+        $activeSheet->setCellValue('O1', 'Created At');
+
+        // --- Tambahkan baris-baris ini untuk membuat header bold dan center ---
+        $headerRange = 'A1:O1'; // Tentukan rentang sel header
+        $activeSheet->getStyle($headerRange)->getFont()->setBold(true); // Buat font tebal
+        $activeSheet->getStyle($headerRange)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER); // Rata tengah horizontal
+        // --- Selesai tambahan ---
+
+        $row = 2;
+        $no = 1;
+        foreach ($data_export as $item) {
+            $activeSheet->setCellValue('A' . $row, $no++);
+            $activeSheet->setCellValue('B' . $row, $item->nip);
+            $activeSheet->setCellValue('C' . $row, $item->nama);
+            $activeSheet->setCellValue('D' . $row, $item->jabatan);
+            $activeSheet->setCellValue('E' . $row, $item->created_at ? date('d-m-Y', strtotime($item->created_at)) : '');
+            $activeSheet->setCellValue('F' . $row, $item->gula);
+            $activeSheet->setCellValue('G' . $row, $item->kolestrol);
+            $activeSheet->setCellValue('H' . $row, $item->asam);
+            $activeSheet->setCellValue('I' . $row, $item->tekanan);
+            $activeSheet->setCellValue('J' . $row, $item->nadi);
+            $activeSheet->setCellValue('K' . $row, $item->saturasi);
+            $activeSheet->setCellValue('L' . $row, $item->rr);
+            $activeSheet->setCellValue('M' . $row, $item->suhu);
+            $activeSheet->setCellValue('N' . $row, $item->keterangan);
+            $activeSheet->setCellValue('O' . $row, $item->created_at);
+            $row++;
+        }
+
+        // Atur lebar kolom otomatis
+        foreach(range('A','O') as $col) {
+            $activeSheet->getColumnDimension($col)->setAutoSize(true);
+        }
+
+        $filename = 'data_pemeriksaan_export_' . date('Y-m-d_H-i-s') . '.xlsx';
+
+        // Set header untuk download
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="' . $filename . '"');
+        header('Cache-Control: max-age=0');
+
+        // Buat writer langsung dengan Fully Qualified Class Name
+        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+        $writer->save('php://output');
+        exit; // Penting untuk menghentikan eksekusi setelah download
     }
 }

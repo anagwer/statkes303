@@ -17,6 +17,7 @@
                         <th>NIP</th>
                         <th>Nama</th>
                         <th>Jabatan</th>
+						<th>Gol. Darah</th>
                         <th>Role</th>
                         <?php if ($this->session->userdata('role') == 'admin'): ?>
                             <th>Aksi</th>
@@ -37,6 +38,7 @@
                         <td><?= htmlspecialchars($u->nip) ?></td>
                         <td><?= htmlspecialchars($u->nama) ?></td>
                         <td><?= htmlspecialchars($u->jabatan) ?></td>
+						<td><?= !empty($u->goldar) ? htmlspecialchars($u->goldar) : '–' ?></td>
                         <td><?= ucfirst($u->role) ?></td>
                         <?php if ($this->session->userdata('role') == 'admin'): ?>
                         <td>
@@ -68,6 +70,16 @@
                                             <label>Jabatan</label>
                                             <input type="text" name="jabatan" class="form-control" value="<?= htmlspecialchars($u->jabatan) ?>">
                                         </div>
+										<div class="form-group">
+											<label>Golongan Darah</label>
+											<select name="goldar" class="form-control">
+												<option value="">Pilih</option>
+												<option value="A" <?= $u->goldar == 'A' ? 'selected' : '' ?>>A</option>
+												<option value="B" <?= $u->goldar == 'B' ? 'selected' : '' ?>>B</option>
+												<option value="AB" <?= $u->goldar == 'AB' ? 'selected' : '' ?>>AB</option>
+												<option value="O" <?= $u->goldar == 'O' ? 'selected' : '' ?>>O</option>
+											</select>
+										</div>
                                         <div class="form-group">
                                             <label>Tempat Lahir</label>
                                             <input type="text" name="tempat_lahir" class="form-control" value="<?= htmlspecialchars($u->tempat_lahir) ?>">
@@ -161,6 +173,16 @@
                         <label>Jabatan</label>
                         <input type="text" name="jabatan" class="form-control">
                     </div>
+					<div class="form-group">
+						<label>Golongan Darah</label>
+						<select name="goldar" class="form-control">
+							<option value="">Pilih</option>
+							<option value="A" <?= set_value('goldar') == 'A' ? 'selected' : '' ?>>A</option>
+							<option value="B" <?= set_value('goldar') == 'B' ? 'selected' : '' ?>>B</option>
+							<option value="AB" <?= set_value('goldar') == 'AB' ? 'selected' : '' ?>>AB</option>
+							<option value="O" <?= set_value('goldar') == 'O' ? 'selected' : '' ?>>O</option>
+						</select>
+					</div>
                     <div class="form-group">
                         <label>Tempat Lahir</label>
                         <input type="text" name="tempat_lahir" class="form-control">

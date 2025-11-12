@@ -23,4 +23,17 @@ class Ketersediaan_model extends CI_Model {
     public function delete($id) {
         return $this->db->delete('ketersediaan', ['id' => $id]);
     }
+
+    // Fungsi baru untuk export Excel
+    public function get_for_export($jenis = null) {
+        $this->db->select('nama, stok, satuan, expired, keterangan, created_at, updated_at');
+        $this->db->from('ketersediaan');
+
+        if ($jenis) {
+            $this->db->where('jenis', $jenis);
+        }
+
+        $this->db->order_by('created_at', 'DESC'); // Urutkan berdasarkan waktu dibuat
+        return $this->db->get()->result();
+    }
 }

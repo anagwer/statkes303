@@ -34,6 +34,7 @@
 						<div class="sidebar-heading">
 								Data Master
 						</div>
+						<?php if ($this->session->userdata('role') == 'admin'): ?>
 						<li class="nav-item">
 								<a class="nav-link" href="<?= base_url('obat') ?>">
 										<i class="fas fa-fw fa-pills"></i>
@@ -46,10 +47,24 @@
 										<span>Ketersediaan Alkes</span>
 								</a>
 						</li>
+						<?php endif;?>
 						<li class="nav-item">
 								<a class="nav-link" href="<?= base_url('pemeriksaan') ?>">
 										<i class="fas fa-fw fa-heartbeat"></i>
 										<span>Data Medis Pegawai</span>
+								</a>
+						</li>
+						<li class="nav-item">
+								<a class="nav-link" href="<?= base_url('riwayat_donor') ?>">
+										<i class="fas fa-fw fa-hand-holding-medical"></i>
+										<span>Data Riwayat Donor</span>
+								</a>
+						</li>
+						
+						<li class="nav-item">
+								<a class="nav-link" href="<?= base_url('riwayat_sakit') ?>">
+										<i class="fas fa-fw fa-procedures"></i>
+										<span>Data Riwayat Sakit</span>
 								</a>
 						</li>
 						<?php if ($this->session->userdata('role') == 'admin'): ?>
@@ -85,7 +100,7 @@
 																	? base_url('assets/img/profil/' . $foto)
 																	: base_url('assets/img/undraw_profile.svg');
 															?>
-															<img class="img-profile rounded-circle" src="<?= $foto_path ?>" style="width: 32px; height: 32px; object-fit: cover;">
+															<img class="img-profile rounded-circle" src="<?= $foto_path ?>" style="width: 32px; height: 32px; object-fit: cover; margin-right:10px;">
 															<span class="mr-2 d-none d-lg-inline text-gray-600 small">
 																	<?= htmlspecialchars($this->session->userdata('nama')) ?>
 															</span>

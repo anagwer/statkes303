@@ -1,9 +1,17 @@
 <h1 class="h3 mb-4 text-gray-800"><?= $title ?></h1>
 
 <?php if ($this->session->userdata('role') == 'admin'): ?>
-    <button type="button" class="btn btn-primary mb-3" data-toggle="modal" data-target="#tambahPemeriksaanModal">
-        Tambah Pemeriksaan
-    </button>
+    <div class="row mb-3">
+        <div class="col-md-12">
+            <button type="button" class="btn btn-primary mr-2" data-toggle="modal" data-target="#tambahPemeriksaanModal">
+                Tambah Pemeriksaan
+            </button>
+            <!-- Tombol Export dan Filter -->
+            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#exportModal">
+                Export Excel
+            </button>
+        </div>
+    </div>
 <?php endif; ?>
 
 <div class="card shadow">
@@ -40,7 +48,7 @@
                                 <span class="text-muted">–</span>
                             <?php endif; ?>
                         </td>
-                        <td><?= htmlspecialchars($p->nama_anggota ?? '–') ?></td>
+                        <td><?= htmlspecialchars($p->nip ?? '–') ?> <br> <?= htmlspecialchars($p->nama_anggota ?? '–') ?></td>
                         <td><?= htmlspecialchars($p->jabatan ?? '–') ?></td>
                         <td><?= $p->created_at ? date('d-m-Y', strtotime($p->created_at)) : '–' ?></td>
                         <td><?= htmlspecialchars($p->gula ?: '–') ?></td>
@@ -58,6 +66,7 @@
                         <?php endif; ?>
                     </tr>
 
+                    <?php if ($this->session->userdata('role') == 'admin'): ?>
                     <!-- Modal Edit -->
                     <div class="modal fade" id="editModal<?= $p->id ?>" tabindex="-1">
                         <div class="modal-dialog">
@@ -143,6 +152,7 @@
                             </div>
                         </div>
                     </div>
+                    <?php endif; ?>
                     <?php endforeach; ?>
                 </tbody>
             </table>
@@ -212,6 +222,50 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
                     <button type="submit" class="btn btn-primary">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<?php endif; ?>
+
+
+<!-- Modal Export Excel -->
+<?php if ($this->session->userdata('role') == 'admin'): ?>
+<div class="modal fade" id="exportModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Export Data Pemeriksaan ke Excel</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <form action="<?= base_url('pemeriksaan/export_excel') ?>" method="get">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Pilih Anggota (Opsional)</label>
+                        <select name="id_user" class="form-control">
+                            <option value="">Semua Anggota</option>
+                            <?php foreach ($users as $u): ?>
+                                <option value="<?= $u->id ?>">
+                                    <?= htmlspecialchars($u->nama) ?> (<?= $u->nip ?>)
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label>Tanggal Awal</label>
+                            <input type="date" name="start_date" class="form-control">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label>Tanggal Akhir</label>
+                            <input type="date" name="end_date" class="form-control">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-success">Export</button>
                 </div>
             </form>
         </div>

@@ -5,11 +5,13 @@ class User extends CI_Controller {
 
     public function __construct() {
         parent::__construct();
-        if (!$this->session->userdata('logged_in') || $this->session->userdata('role') != 'admin') {
-            show_error('Akses ditolak!', 403);
+        if (!$this->session->userdata('logged_in')) {
+            redirect('auth');
         }
         $this->load->model('User_model');
-        $this->load->helper('file'); // untuk delete file lama
+        $this->load->helper('file');
+
+        $this->load->helper('form'); // Tambahkan ini
     }
 
     public function index() {
@@ -52,6 +54,7 @@ class User extends CI_Controller {
                 'password' => password_hash($this->input->post('password'), PASSWORD_DEFAULT),
                 'nama' => $this->input->post('nama'),
                 'jabatan' => $this->input->post('jabatan'),
+				'goldar' => $this->input->post('goldar'),
                 'tempat_lahir' => $this->input->post('tempat_lahir'),
                 'tanggal_lahir' => $this->input->post('tanggal_lahir'),
                 'role' => $this->input->post('role'),
@@ -120,6 +123,7 @@ class User extends CI_Controller {
                 'nip' => $nip,
                 'nama' => $this->input->post('nama'),
                 'jabatan' => $this->input->post('jabatan'),
+				'goldar' => $this->input->post('goldar'),
                 'tempat_lahir' => $this->input->post('tempat_lahir'),
                 'tanggal_lahir' => $this->input->post('tanggal_lahir'),
                 'role' => $this->input->post('role'),

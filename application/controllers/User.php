@@ -91,7 +91,7 @@ class User extends CI_Controller {
             $nip = $this->input->post('nip');
             if (!$this->User_model->is_nip_unique($nip, $id)) {
                 $this->session->set_flashdata('error', 'NIP sudah digunakan!');
-                redirect('user/' . $id);
+                redirect('user');
             }
 
             // Handle foto baru
@@ -115,7 +115,7 @@ class User extends CI_Controller {
                     }
                 } else {
                     $this->session->set_flashdata('error', $this->upload->display_errors());
-                    redirect('user/' . $id);
+                    redirect('user');
                 }
             }
 

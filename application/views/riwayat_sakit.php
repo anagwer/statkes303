@@ -24,7 +24,11 @@
                         <th>Foto</th>
                         <th>Nama Anggota</th>
                         <th>Jabatan</th>
+						<th>Penyakit</th> 
                         <th>Tanggal Sakit</th>
+						<th>Bukti</th>          
+						<th>Rekomendasi</th>
+						<th>Obat</th>           
                         <th>Keterangan</th>
                         <?php if ($this->session->userdata('role') == 'admin'): ?>
                             <th>Aksi</th>
@@ -43,9 +47,31 @@
                             <?php endif; ?>
                         </td>
                         <td><?= htmlspecialchars($r->nip ?? '–') ?> - <?= htmlspecialchars($r->nama_anggota ?? '–') ?></td>
-                        <td><?= htmlspecialchars($r->jabatan ?? '–') ?></td>
-                        <td><?= $r->tanggal_sakit ? date('d-m-Y', strtotime($r->tanggal_sakit)) : '–' ?></td>
-                        <td><?= htmlspecialchars($r->keterangan ?? '–') ?></td>
+						<td><?= htmlspecialchars($r->jabatan ?? '–') ?></td>
+						<td><?= htmlspecialchars($r->sakit ?? '–') ?></td> <!-- BARU -->
+						<td><?= $r->tanggal_sakit ? date('d-m-Y', strtotime($r->tanggal_sakit)) : '–' ?></td>
+						<td>
+							<?php if (!empty($r->bukti)): ?>
+								<?php
+								$ext = pathinfo($r->bukti, PATHINFO_EXTENSION);
+								$filePath = FCPATH . 'assets/uploads/bukti_sakit/' . $r->bukti;
+								if (file_exists($filePath)) {
+									if (in_array(strtolower($ext), ['jpg', 'jpeg', 'png', 'gif'])) {
+										echo '<a href="' . base_url('assets/uploads/bukti_sakit/' . $r->bukti) . '" target="_blank" class="badge badge-primary">Lihat Gambar</a>';
+									} else {
+										echo '<a href="' . base_url('assets/uploads/bukti_sakit/' . $r->bukti) . '" target="_blank" class="badge badge-primary">Lihat PDF</a>';
+									}
+								} else {
+									echo '<span class="text-muted">File tidak ditemukan</span>';
+								}
+								?>
+							<?php else: ?>
+								<span class="text-muted">–</span>
+							<?php endif; ?>
+						</td>
+						<td><?= htmlspecialchars($r->rekomendasi ?? '–') ?></td> <!-- BARU -->
+						<td><?= htmlspecialchars($r->obat ?? '–') ?></td> <!-- BARU -->
+						<td><?= htmlspecialchars($r->keterangan ?? '–') ?></td>
                         <?php if ($this->session->userdata('role') == 'admin'): ?>
                         <td>
                             <button class="btn btn-sm btn-warning" data-toggle="modal" data-target="#editModal<?= $r->id ?>">Edit</button>
@@ -63,7 +89,7 @@
                                     <h5 class="modal-title">Edit Riwayat Sakit</h5>
                                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                                 </div>
-                                <form action="<?= base_url('riwayat_sakit/edit/' . $r->id) ?>" method="post">
+                                <form action="<?= base_url('riwayat_sakit/edit/' . $r->id) ?>" method="post" enctype="multipart/form-data">
                                     <div class="modal-body">
                                         <div class="form-group">
                                             <label>Anggota *</label>
@@ -76,10 +102,43 @@
                                                 <?php endforeach; ?>
                                             </select>
                                         </div>
+										<div class="form-group">
+											<label>Penyakit *</label>
+											<input type="text" name="sakit" class="form-control" value="<?= htmlspecialchars($r->sakit ?? '') ?>" required>
+										</div>
                                         <div class="form-group">
                                             <label>Tanggal Sakit *</label>
                                             <input type="date" name="tanggal_sakit" class="form-control" value="<?= $r->tanggal_sakit ?>" required>
                                         </div>
+										<div class="form-group">
+											<label>Bukti (PDF/Gambar)</label>
+											<input type="file" name="bukti" class="form-control-file" accept=".pdf,.jpg,.jpeg,.png">
+											<?php if (isset($r->bukti) && !empty($r->bukti)): ?>
+												<small class="form-text text-muted">
+													File saat ini: 
+													<?php
+													$ext = pathinfo($r->bukti, PATHINFO_EXTENSION);
+													if (in_array(strtolower($ext), ['jpg','jpeg','png','gif'])) {
+														echo '<a href="' . base_url('assets/uploads/bukti_sakit/' . $r->bukti) . '" target="_blank">Lihat</a>';
+													} else {
+														echo '<a href="' . base_url('assets/uploads/bukti_sakit/' . $r->bukti) . '" target="_blank">Download</a>';
+													}
+													?>
+												</small>
+											<?php endif; ?>
+										</div>
+
+										<!-- Rekomendasi -->
+										<div class="form-group">
+											<label>Rekomendasi</label>
+											<textarea name="rekomendasi" class="form-control" rows="2"><?= htmlspecialchars($r->rekomendasi ?? '') ?></textarea>
+										</div>
+
+										<!-- Obat -->
+										<div class="form-group">
+											<label>Obat</label>
+											<textarea name="obat" class="form-control" rows="2"><?= htmlspecialchars($r->obat ?? '') ?></textarea>
+										</div>
                                         <div class="form-group">
                                             <label>Keterangan</label>
                                             <textarea name="keterangan" class="form-control" rows="3"><?= htmlspecialchars($r->keterangan) ?></textarea>
@@ -142,10 +201,30 @@
                             <?php endforeach; ?>
                         </select>
                     </div>
+					<div class="form-group">
+						<label>Penyakit *</label>
+						<input type="text" name="sakit" class="form-control" placeholder="masukkan penyakit" required>
+					</div>
                     <div class="form-group">
                         <label>Tanggal Sakit *</label>
                         <input type="date" name="tanggal_sakit" class="form-control" required>
                     </div>
+					<div class="form-group">
+						<label>Bukti (PDF/Gambar)</label>
+						<input type="file" name="bukti" class="form-control-file" accept=".pdf,.jpg,.jpeg,.png">
+					</div>
+
+					<!-- Rekomendasi -->
+					<div class="form-group">
+						<label>Rekomendasi</label>
+						<textarea name="rekomendasi" class="form-control" rows="2"></textarea>
+					</div>
+
+					<!-- Obat -->
+					<div class="form-group">
+						<label>Obat</label>
+						<textarea name="obat" class="form-control" rows="2"></textarea>
+					</div>
                     <div class="form-group">
                         <label>Keterangan</label>
                         <textarea name="keterangan" class="form-control" rows="3"></textarea>

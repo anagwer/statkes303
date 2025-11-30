@@ -13,6 +13,12 @@
         </div>
     </div>
 <?php endif; ?>
+<style>
+    .badge-orange {
+        background-color: #fd7e14 !important;
+        color: white !important;
+    }
+</style>
 
 <div class="card shadow">
     <div class="card-body">
@@ -25,8 +31,9 @@
                         <th>Nama Anggota</th>
                         <th>Jabatan</th>
                         <th>Tanggal</th>
-                        <th>TB (cm)</th> <!-- Tambahkan kolom ini -->
-                        <th>BB (kg)</th> <!-- Tambahkan kolom ini -->
+                        <th>TB (cm)</th>
+                        <th>BB (kg)</th>
+						<th>IMT</th>
                         <th>Gula</th>
                         <th>Kolestrol</th>
                         <th>Asam</th>
@@ -53,8 +60,42 @@
                         <td><?= htmlspecialchars($p->nip ?? '–') ?> <br> <?= htmlspecialchars($p->nama_anggota ?? '–') ?></td>
                         <td><?= htmlspecialchars($p->jabatan ?? '–') ?></td>
                         <td><?= $p->created_at ? date('d-m-Y', strtotime($p->created_at)) : '–' ?></td>
-                        <td><?= htmlspecialchars($p->tb ?: '–') ?></td> <!-- Tambahkan kolom ini -->
-                        <td><?= htmlspecialchars($p->bb ?: '–') ?></td> <!-- Tambahkan kolom ini -->
+                        <td><?= htmlspecialchars($p->tb ?: '–') ?></td> 
+                        <td><?= htmlspecialchars($p->bb ?: '–') ?></td> 
+						<td>
+							<?php
+							$imt = null;
+							$kategori_imt = '–';
+							$badge_class = 'badge badge-secondary'; // default
+
+							if (!empty($p->tb) && !empty($p->bb) && $p->tb > 0) {
+								$tb_m = $p->tb / 100;
+								$imt = $p->bb / ($tb_m * $tb_m);
+								$imt = round($imt, 1);
+
+								if ($imt < 18.5) {
+									$kategori_imt = 'Berat Badan Kurang';
+									$badge_class = 'badge badge-warning'; // kuning
+								} elseif ($imt <= 22.9) {
+									$kategori_imt = 'Normal';
+									$badge_class = 'badge badge-success'; // hijau
+								} elseif ($imt <= 24.9) {
+									$kategori_imt = 'Kelebihan Berat Badan';
+									// Bootstrap 4/5 tidak punya "orange", jadi kita pakai custom style
+									$badge_class = 'badge badge-orange';
+								} else {
+									$kategori_imt = 'Obesitas';
+									$badge_class = 'badge badge-danger'; // merah
+								}
+							}
+
+							if ($imt !== null):
+								echo '<span class="' . $badge_class . '" style="display: inline-block; min-width: 120px; text-align: center;">' . $imt . '<br><small>' . $kategori_imt . '</small></span>';
+							else:
+								echo '<span class="text-muted">–</span>';
+							endif;
+							?>
+						</td>
                         <td><?= htmlspecialchars($p->gula ?: '–') ?></td>
                         <td><?= htmlspecialchars($p->kolestrol ?: '–') ?></td>
                         <td><?= htmlspecialchars($p->asam ?: '–') ?></td>

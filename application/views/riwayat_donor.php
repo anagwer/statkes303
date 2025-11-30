@@ -24,6 +24,7 @@
                         <th>Foto</th>
                         <th>Nama Anggota</th>
                         <th>Jabatan</th>
+                        <th>Goldar</th>
                         <th>Tanggal Donor</th>
                         <th>Keterangan</th>
                         <?php if ($this->session->userdata('role') == 'admin'): ?>
@@ -44,6 +45,7 @@
                         </td>
                         <td><?= htmlspecialchars($r->nip ?? '–') ?> - <?= htmlspecialchars($r->nama_anggota ?? '–') ?></td>
                         <td><?= htmlspecialchars($r->jabatan ?? '–') ?></td>
+                        <td><?= htmlspecialchars($r->goldar ?? '–') ?></td>
                         <td><?= $r->tanggal_donor ? date('d-m-Y', strtotime($r->tanggal_donor)) : '–' ?></td>
                         <td><?= htmlspecialchars($r->keterangan ?? '–') ?></td>
                         <?php if ($this->session->userdata('role') == 'admin'): ?>

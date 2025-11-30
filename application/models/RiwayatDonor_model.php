@@ -4,7 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class RiwayatDonor_model extends CI_Model {
 
     public function get_all($user_id = null, $role = null) {
-        $this->db->select('rd.*, u.nama as nama_anggota, u.nip, u.jabatan, u.foto');
+        $this->db->select('rd.*, u.nama as nama_anggota, u.nip, u.jabatan, u.foto, u.goldar');
         $this->db->from('riwayat_donor rd');
         $this->db->join('users u', 'u.id = rd.id_user', 'left');
 

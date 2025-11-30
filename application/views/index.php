@@ -1,5 +1,5 @@
 <!-- Page Heading -->
-<h1 class="h3 mb-4 text-gray-800">Dashboard Statkes 303</h1>
+<h1 class="h3 mb-4 text-gray-800">Dashboard Statistika Kesehatan</h1>
 <!-- Pesan Selamat Datang -->
 <div class="alert alert-info">
     <h5><i class="fas fa-info-circle"></i> Selamat Datang, <?= htmlspecialchars($this->session->userdata('nama')) ?>!</h5>

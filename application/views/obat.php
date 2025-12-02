@@ -37,8 +37,8 @@
                     <tr>
                         <td><?= $i++ ?></td>
                         <td>
-                            <?php if ($item->foto && file_exists(FCPATH . 'assets/img/profil/' . $item->foto)): ?>
-                                <img src="<?= base_url('assets/img/profil/' . $item->foto) ?>" width="150" class="rounded">
+                            <?php if ($item->foto && file_exists(FCPATH . 'assets/img/obat/' . $item->foto)): ?>
+                                <img src="<?= base_url('assets/img/obat/' . $item->foto) ?>" width="150" class="rounded">
                             <?php else: ?>
                                 <span class="text-muted">–</span>
                             <?php endif; ?>
@@ -89,8 +89,8 @@
                                         </div>
                                         <div class="form-group">
                                             <label>Foto Saat Ini</label><br>
-                                            <?php if ($item->foto && file_exists(FCPATH . 'assets/img/profil/' . $item->foto)): ?>
-                                                <img src="<?= base_url('assets/img/profil/' . $item->foto) ?>" width="80" class="mb-2 rounded">
+                                            <?php if ($item->foto && file_exists(FCPATH . 'assets/img/obat/' . $item->foto)): ?>
+                                                <img src="<?= base_url('assets/img/obat/' . $item->foto) ?>" width="80" class="mb-2 rounded">
                                             <?php else: ?>
                                                 <span class="text-muted">Tidak ada foto</span>
                                             <?php endif; ?>

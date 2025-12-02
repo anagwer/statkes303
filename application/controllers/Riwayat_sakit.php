@@ -75,7 +75,7 @@ class Riwayat_sakit extends CI_Controller {
         $data['users'] = $this->RiwayatSakit_model->get_users();
         $data['title'] = 'Tambah Riwayat Sakit';
         $this->load->view('layouts/header', $data);
-        $this->load->view('riwayat_sakit_form'); // Pastikan view ini tidak digunakan di index, bisa diganti atau hapus
+        $this->load->view('riwayat_sakit'); // Pastikan view ini tidak digunakan di index, bisa diganti atau hapus
         $this->load->view('layouts/footer');
     }
 
@@ -111,7 +111,7 @@ class Riwayat_sakit extends CI_Controller {
 					$bukti_name = $upload_data['file_name'];
 				} else {
 					$this->session->set_flashdata('error', 'Gagal upload bukti: ' . $this->upload->display_errors());
-					redirect('riwayat_sakit/edit/' . $id);
+					redirect('riwayat_sakit');
 				}
 			}
 
@@ -138,7 +138,7 @@ class Riwayat_sakit extends CI_Controller {
         $data['users'] = $this->RiwayatSakit_model->get_users();
         $data['title'] = 'Edit Riwayat Sakit';
         $this->load->view('layouts/header', $data);
-        $this->load->view('riwayat_sakit_form'); // Pastikan view ini tidak digunakan di index, bisa diganti atau hapus
+        $this->load->view('riwayat_sakit'); // Pastikan view ini tidak digunakan di index, bisa diganti atau hapus
         $this->load->view('layouts/footer');
     }
 

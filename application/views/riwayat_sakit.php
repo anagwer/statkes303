@@ -188,7 +188,7 @@
                 <h5 class="modal-title">Tambah Riwayat Sakit</h5>
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
-            <form action="<?= base_url('riwayat_sakit/create') ?>" method="post">
+            <form action="<?= base_url('riwayat_sakit/create') ?>" method="post" enctype="multipart/form-data">
                 <div class="modal-body">
                     <div class="form-group">
                         <label>Anggota *</label>
